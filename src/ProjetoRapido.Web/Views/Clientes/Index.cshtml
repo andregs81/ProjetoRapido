@@ -8,49 +8,80 @@
 <h2>Lista de Clientes</h2>
 
 <div>
-    
+
     <button id="add" name="add" class="btn btn-sm btn-success">
         <span class="glyphicon glyphicon-plus"> </span> Adicionar
     </button>
-   
-</div>
-<br />
 
+</div>
+
+
+<div class="row col-md-4 pull-right">
+    <div class="input-group">
+        <input id="inputFilter" type="text" class="form-control" placeholder="Pesquisar...">
+        <div class="input-group-btn">
+            <button class="btn btn-default">
+                <i class="glyphicon glyphicon-search"></i>
+            </button>
+        </div>
+    </div>
+    <hr />
+</div>
+
+<br><br><br />
 <table class="table">
     <thead>
         <tr>
+            <th>
+                #
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nome)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SobreNome)
             </th>
+            <th>
+                Cidade
+            </th>
+            <th>
+                UF
+            </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="tbCliente">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SobreNome)
-                </td>
-                <td>
-                    
-                    <a id="btnEdit" data-toggle="tooltip" title="Editar"
-                       class="btn btn-primary" onclick="EditCliente(@item.ClienteID)">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                                            
-                    <a id="btnDelete" data-toggle="tooltip" title="Excluir" 
-                       class="btn btn-danger" onclick="DeleteCliente(@item.ClienteID)">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClienteID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SobreNome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td class="pull-right">
+
+                <a id="btnEdit" data-toggle="tooltip" title="Editar"
+                   class="btn btn-primary" onclick="EditCliente(@item.ClienteID)">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+
+                <a id="btnDelete" data-toggle="tooltip" title="Excluir"
+                   class="btn btn-danger" onclick="DeleteCliente(@item.ClienteID)">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -79,6 +110,12 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
 
+        $("#inputFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tbCliente tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
 
         $("#add").click(function () {
             CarregarCliente();
@@ -112,8 +149,8 @@
                 success: function () {
                     toastr.success("Cliente cadastrado com sucesso!");
                     goToIndex();
-                                        
-                    modalClose();                                        
+
+                    modalClose();
                 }
                 , error: function (erro) {
                     toastr.error(erro.responseText);
