@@ -1,0 +1,131 @@
+﻿@model IEnumerable<ProjetoRapido.Services.ViewModel.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/Cliente.js"></script>
+<h2>Lista de Clientes</h2>
+
+<div>
+    <button id="add" name="add" class="btn btn-success">Adicionar</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SobreNome)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SobreNome)
+                </td>
+                <td>
+                    
+                    <a id="btnEdit" class="btn btn-primary" onclick="EditCliente(@item.ClienteID)">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                                            
+                    <a id="btnDelete" class="btn btn-danger" onclick="DeleteCliente(@item.ClienteID)">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Cadastro de Cliente</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="divClientes"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                <button id="btnConfirma" type="button" class="btn btn-primary">Confirma</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#add").click(function () {
+            CarregarCliente();
+            $('.modal').modal('show');
+        });
+
+        function CarregarCliente() {
+            var url = "/Clientes/Create";
+            $.ajax({
+                url: url
+                , type: "GET"
+                , datatype: "html"
+                , success: function (data) {
+                    var divCliente = $("#divClientes");
+                    divCliente.empty();
+                    divCliente.show();
+                    divCliente.html(data);
+                }
+            });
+        }
+
+        function Salvar() {
+            url = '/Clientes/Create'
+            var dados = $("#formCliente").serialize();
+            console.log(dados);
+            $.ajax({
+                url: url,
+                type: "POST",
+                datatype: "json",
+                data: dados,
+                success: function () {
+                    toastr.success("Cliente cadastrado com sucesso!");
+                    goToIndex();
+                                        
+                    modalClose();                                        
+                }
+                , error: function (erro) {
+                    toastr.error(erro.responseText);
+                    sleep(500);
+                }
+            });
+        }
+
+        $("#btnConfirma").click(function () {
+            Salvar();
+        });
+
+    });
+
+
+    function modalClose() {
+        jQuery.noConflict();
+        $('.modal').modal('hide');
+        $('.modal-backdrop').css('display', 'none');
+    }
+
+
+
+
+</script>
