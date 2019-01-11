@@ -8,8 +8,13 @@
 <h2>Lista de Clientes</h2>
 
 <div>
-    <button id="add" name="add" class="btn btn-success">Adicionar</button>
+    
+    <button id="add" name="add" class="btn btn-sm btn-success">
+        <span class="glyphicon glyphicon-plus"> </span> Adicionar
+    </button>
+   
 </div>
+<br />
 
 <table class="table">
     <thead>
@@ -35,11 +40,13 @@
                 </td>
                 <td>
                     
-                    <a id="btnEdit" class="btn btn-primary" onclick="EditCliente(@item.ClienteID)">
+                    <a id="btnEdit" data-toggle="tooltip" title="Editar"
+                       class="btn btn-primary" onclick="EditCliente(@item.ClienteID)">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
                                             
-                    <a id="btnDelete" class="btn btn-danger" onclick="DeleteCliente(@item.ClienteID)">
+                    <a id="btnDelete" data-toggle="tooltip" title="Excluir" 
+                       class="btn btn-danger" onclick="DeleteCliente(@item.ClienteID)">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     </a>
                 </td>
@@ -70,6 +77,9 @@
 
 <script>
     $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+
         $("#add").click(function () {
             CarregarCliente();
             $('.modal').modal('show');
